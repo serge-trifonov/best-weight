@@ -4,12 +4,23 @@ body{
 	background-color: #000000;
 }
 
+
 .bg{
 	position: absolute;
 	right: 0;
 	top: 0;
 	z-index: -999999;
 	max-width: 100%;
+}
+
+h4 {
+	color: #ff8000;
+    text-shadow: black 1px 1px 0, black -1px -1px 0, black -1px 1px 0, black 1px -1px 0;
+    font-weight: bold;
+}
+
+h5 {
+    text-shadow: black 1px 1px 0, black -1px -1px 0, black -1px 1px 0, black 1px -1px 0;
 }
 
 @media screen and (max-width: 1000px) {

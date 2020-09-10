@@ -3,6 +3,7 @@ package com.best.weight.desk.controllers;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,11 +21,10 @@ public class UserController {
 	
 	@PostMapping("{id}")
 	 public User create(
-	            @PathVariable("id") User userFromDB, @RequestBody User user 
+	            Model model, @PathVariable("id") User userFromDB, @RequestBody User user 
 	    ) {
-			System.out.println("user weight : "+user.getWeight());
 			BeanUtils.copyProperties(user, userFromDB, "id");
-			System.out.println("user weight : "+user.getWeight());
+			model.addAttribute("userAuth", userFromDB);
 	        return userService.updateUser(userFromDB);
 	 }
 }

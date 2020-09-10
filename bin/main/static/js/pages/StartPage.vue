@@ -82,10 +82,11 @@
 		formData.append("username", this.profile.username);
 		formData.append("password", this.profile.password);
 		var result = await this.$http.post("/login", formData);
-		console.log(result);
+		console.log(result.data);
             },
 	    async registration(event){
 		event.preventDefault();
+		console.log(this.profile);
 		await this.$http.post("/registration", this.profile);
             }
         },

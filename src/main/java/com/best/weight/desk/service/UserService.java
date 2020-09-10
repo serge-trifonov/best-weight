@@ -27,6 +27,7 @@ public class UserService implements UserDetailsService{
 	
 	public Map <String, Object> create(User user) {
 		Map <String, Object> model = new HashMap<>();
+		System.out.println("height "+user.getHeight());
 		boolean nameexist = userRepository.findByUsername(user.getUsername())!=null;
 		boolean emailexist = userRepository.findByEmail(user.getEmail())!=null;
 		model.put("nameexist", nameexist);
@@ -38,7 +39,6 @@ public class UserService implements UserDetailsService{
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		System.out.println("username in userdetails : "+username);
 		User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");

@@ -31,7 +31,7 @@
     "vue": "^2.6.11",
     "vue-flag-icon": "^1.0.6",
     "vue-fontawesome": "^0.0.2",
-    "vue-i18n": "^8.17.4",
+    "vue-i18n": "^8.21.0",
     "vue-js-modal": "^2.0.0-rc.3",
     "vue-resource": "^1.5.1",
     "vue-router": "3.0.2",
