@@ -25,16 +25,16 @@ public class ProjectController {
 	 ProjectService projectService;
 	 
 	 @GetMapping   
-	 public Set<BestWeightProject> main(Model model, @AuthenticationPrincipal User author) throws AuthenticationException, Exception {
-		 Set<BestWeightProject> projects = projectService.findByAuthor(author);
-	     return projects; 
+	 public BestWeightProject main(Model model, @AuthenticationPrincipal User author) throws AuthenticationException, Exception {
+		 BestWeightProject project = projectService.findByAuthor(author);
+	     return project; 
 	  }
 	 
 	 @PostMapping
 	 public BestWeightProject create(
-	            @RequestBody BestWeightProject project, @AuthenticationPrincipal User author
+	           @RequestBody BestWeightProject project
 	    ) {
-	        return projectService.addProject(project, author);
+		 	return projectService.addProject(project);
 	 }
 
 }

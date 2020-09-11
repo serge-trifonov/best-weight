@@ -10,5 +10,5 @@ import com.best.weight.desk.entities.User;
 
 
 public interface ProjectRepository extends JpaRepository<BestWeightProject, Long>{
-	public Set<BestWeightProject> findByAuthor(User user);
+	public BestWeightProject findByAuthor(User user);
 }

@@ -12,29 +12,35 @@ import com.best.weight.desk.entities.BestWeightProject;
 import com.best.weight.desk.entities.User;
 import com.best.weight.desk.entities.WeightMesure;
 import com.best.weight.desk.repositories.ProjectRepository;
+import com.best.weight.desk.repositories.WeightMesureRepository;
 
 @Service
 public class ProjectService {
 	
 	 @Autowired
 	 ProjectRepository projectRepository;
+		
+	 @Autowired
+	 WeightMesureRepository weightMesureRepository;
 	 
-	 public Set<BestWeightProject> findByAuthor(User user){
+	 public BestWeightProject findByAuthor(User user){
 		 return projectRepository.findByAuthor(user); 
 	 }
 
-	 public BestWeightProject addProject(BestWeightProject project, User author) {
-    	project.setAuthor(author);
+	 public BestWeightProject addProject(BestWeightProject project) {
+		projectRepository.delete(projectRepository.findByAuthor(project.getAuthor())); 
     	project.setStartDate(LocalDate.now());
     	double actualStartWeight = project.getStartWeight();
     	boolean looseWeight = actualStartWeight>project.getDesiredWeight();
 		LocalDate expectedFinishDate = project.getStartDate();
 		List<WeightMesure> expectedWeightMesures = new ArrayList<>();
+		List<WeightMesure> weightMesures = new ArrayList<>();
 		WeightMesure weightMesure = new WeightMesure();
 		weightMesure.setMesureDate(expectedFinishDate);
 		weightMesure.setWeight(actualStartWeight);
+		weightMesureRepository.save(weightMesure);
 		expectedWeightMesures.add(weightMesure);
-		
+		weightMesures.add(weightMesure);
 		while ((actualStartWeight>project.getDesiredWeight())||(actualStartWeight<project.getDesiredWeight()&&!looseWeight)) {
 			weightMesure = new WeightMesure();
 			if(looseWeight) {
@@ -46,10 +52,12 @@ public class ProjectService {
 			expectedFinishDate = expectedFinishDate.plusWeeks(1);
 			weightMesure.setMesureDate(expectedFinishDate);
 			weightMesure.setWeight(actualStartWeight);
+			weightMesureRepository.save(weightMesure);
+			expectedWeightMesures.add(weightMesure);
 		}
-		
+		project.setExpectedFinishDate(expectedFinishDate);
 		project.setExpectedWeightMesures(expectedWeightMesures);
-
+		project.setWeightMesures(weightMesures);
 		return projectRepository.save(project);
 	 }
 }

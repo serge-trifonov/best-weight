@@ -7,7 +7,7 @@ export const i18n = new VueI18n({
 	locale : 'fr',
 	fallbackLocale : 'en',
 	messages : {
-		en : {		
+		fr : {		
 			users:'Users',
 			yourimc: 'Votre IMC',
 			comments0: 'Saisissez votre poids et taille pour connaitre votre IMC',
@@ -19,10 +19,10 @@ export const i18n = new VueI18n({
 			comments6: 'Obésité sévère',
 			comments7: 'Obésité morbide ou massive',
 			bestweightinterval: 'Votre poids idéale se situe entre {min} et {max} kilos',
-			noprojects: 'Pour commencer votre premier projet de changement de poids, saisissez votre objectif de poids'
+			noprojects: 'Pour commencer votre premier projet de changement de poids, saisissez votre objectif de poids',
+			description: 'Après la saisie de l\'objectif de poids vous verrez la graphe de changement de poids attendu en prenant la vitesse moyenne pour le processus de changement (augmentation ou perte) saine. Par la suite vous pourrez saisir les resultats de vos mesures de poids et les comparer avec les mesures attendu. Cela vous permetra d\'avoir une idée sur les delais de votre projet de changement de poids et évitera d\'avoir les expectations démesurées.'
 		},
-		
-		fr : {
+		en : {
 			user:'Utilisateurs'
 		}	
 	}

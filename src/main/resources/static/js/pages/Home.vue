@@ -13,8 +13,9 @@
             }
        },
        methods: {
-        },
-	created(){
+	
+       },
+       created(){
 		if(user === null){
 			this.$router.push({ path: 'start' })
 		}

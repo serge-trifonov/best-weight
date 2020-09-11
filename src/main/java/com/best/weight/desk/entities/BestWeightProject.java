@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -30,8 +31,7 @@ public class BestWeightProject implements Serializable{
 	private List<WeightMesure> expectedWeightMesures;
 	private Double desiredWeight;
 	private Double startWeight;
-	private Boolean current;
-	@ManyToOne
+	@OneToOne
 	private User author;
 	
 	public LocalDate getStartDate() {
@@ -76,11 +76,11 @@ public class BestWeightProject implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Boolean getCurrent() {
-		return current;
+	public LocalDate getExpectedFinishDate() {
+		return expectedFinishDate;
 	}
-	public void setCurrent(Boolean current) {
-		this.current = current;
+	public void setExpectedFinishDate(LocalDate expectedFinishDate) {
+		this.expectedFinishDate = expectedFinishDate;
 	}
 
 }

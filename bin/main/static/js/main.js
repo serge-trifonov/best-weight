@@ -6,8 +6,10 @@ import '@babel/polyfill'
 import 'bootstrap'
 import 'assets/app.scss'
 import {i18n} from 'i18n/i18n'
+import HighchartsVue from "highcharts-vue";
 
 Vue.use(VueResource);
+Vue.use(HighchartsVue);
 
 new Vue({
     el: '#app',

@@ -6,7 +6,7 @@
 	    <label for="actualWeight"><h4>Votre poids actuel</h4></label>
 	    <input type="text" v-model="userProfile.weight" class=" form-control" id="actualWeight" placeholder="Poids actuel">
 	  </div>
-	  <button type="submit" class="btn btn-primary" @click.stop="addWeight">Submit</button>
+	  <button type="submit" class="btn btn-success" @click.stop="addWeight">Submit</button>
 	</form>
 	<div class="col-6 text-center">
 		<div :class="getColor()">
@@ -18,45 +18,67 @@
 	<form class="col-3 text-center">
  	 <div class="form-group">
 	    <label for="desiredWeight"><h4>Objectif de poids</h4></label>
-	    <input type="text" v-model="currentproject.desiredWeight" class="form-control" id="desiredWeight" placeholder="Poids souhaité">
+	    <input type="number" v-model="project.desiredWeight" class="form-control" id="desiredWeight" placeholder="Poids souhaité">
 	  </div>
-	  <button type="submit" class="btn btn-primary" @click.stop="addWeight">Submit</button>
+	  <button type="submit" class="btn btn-success" @click.stop="addDesiredWeight">Submit</button>
 	</form>
     	</div>
-	<div v-if="currentproject.startDate">projects</div>
+	<div v-if="project.startDate">
+		<highcharts :dats="alldates" :cats="allcategories"/>
+	</div>
 	<div v-else>
-		<div class="alert alert-primary text-center m-5" role="alert">
+		<div class="alert alert-dark text-center m-5" role="alert">
 			{{$t("noprojects")}}
 		</div>
-		<img src="/images/balance.jpg" alt="bg" class="bg">
+		<div class="row">
+			<div class="col-3">
+				<img src="/images/balance.jpg" class="balance">
+			</div>
+			<div class="col-9">
+				<div class="alert alert-dark text-center m-5" role="alert">
+					{{$t("description")}}
+				</div>
+			</div>
+		</div>
 	</div>
     </div>
 </template>
 
 <script>
+import Chart from "./Graph";
     export default {
+	components: {
+	    highcharts: Chart
+  	},
 	data() {
             return {
 		userProfile: user,
-		oldprojects: [],
-		currentproject: {},
+		project: {},
 		imc: 0,
 		minPoids: 0,
-		maxPoids: 0
-            }
+		maxPoids: 0,
+		alldates: [0],
+		allcategories: [""]
+	   }
        },
        methods: {
             async addWeight(event){
 		event.preventDefault();
-		console.log(this.userProfile);
 		this.userProfile.weight = parseFloat(this.userProfile.weight);
-		console.log(this.userProfile);
 		var request = await this.$http.post("/user/"+this.userProfile.id, this.userProfile);
 		this.userProfile = request.data;
 		user = request.data;
-		console.log("request ", user);
 		this.countImc();
             },
+	    async addDesiredWeight(event) {
+		event.preventDefault();
+		this.project.startWeight = this.userProfile.weight;
+		this.project.author = this.userProfile;
+		console.log(this.project);
+		var request = await this.$http.post("/projects", this.project);
+		this.project = request.data;
+
+	    },
 	    comments () {
 		if (this.imc<16.5) {
 			return "1";
@@ -99,10 +121,17 @@
         },
 	async created(){
 		var result = await this.$http.get("/projects");
-		var projects = result.data;
-		if(projects){
-			this.currentproject = projects.filter(p => p.current);
-			this.oldprojects = projects.filter(p => !p.current);
+		var userInfo = await this.$http.get("user/"+this.userProfile.id);
+		this.userProfile = userInfo.data;
+		this.project = result.data;
+		if(!this.project){
+			this.project={};
+		}
+		else {
+			console.log(this.project);
+			this.alldates = this.project.expectedWeightMesures.map(m=>m.weight);
+			console.log(this.alldates);
+			this.allcategories = this.project.expectedWeightMesures.map(m=>m.mesureDate);
 		}
 		this.countImc();
 	}
