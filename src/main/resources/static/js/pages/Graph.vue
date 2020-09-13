@@ -23,6 +23,12 @@ export default {
     },
     dats: {
       type: Array
+    },
+    rdats: {
+      type: Array
+    },
+    title: {
+      type: String
     }
   },
 
@@ -33,6 +39,14 @@ export default {
           type: "spline",
           title: "Hassaan"
         },
+        title: {
+          text: this.title
+        },
+	yAxis: {
+	  title: {
+            text: this.$t('weightkg')
+          },
+	},
         xAxis: {
           categories: this.cats
         },
@@ -54,8 +68,13 @@ export default {
         },
         series: [
           {
+	    name: this.$t('expectedDatas'),
             data: this.dats
-          }
+          },
+	  {
+	    name: this.$t('realDatas'),
+	    data: this.rdats
+	  }
         ]
       }
     };

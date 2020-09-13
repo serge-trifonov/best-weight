@@ -20,7 +20,18 @@ export const i18n = new VueI18n({
 			comments7: 'Obésité morbide ou massive',
 			bestweightinterval: 'Votre poids idéale se situe entre {min} et {max} kilos',
 			noprojects: 'Pour commencer votre premier projet de changement de poids, saisissez votre objectif de poids',
-			description: 'Après la saisie de l\'objectif de poids vous verrez la graphe de changement de poids attendu en prenant la vitesse moyenne pour le processus de changement (augmentation ou perte) saine. Par la suite vous pourrez saisir les resultats de vos mesures de poids et les comparer avec les mesures attendu. Cela vous permetra d\'avoir une idée sur les delais de votre projet de changement de poids et évitera d\'avoir les expectations démesurées.'
+			description: 'Après la saisie de l\'objectif de poids vous verrez la graphe de changement de poids attendu en prenant la vitesse moyenne pour le processus de changement (augmentation ou perte) saine. Par la suite vous pourrez saisir les resultats de vos mesures de poids et les comparer avec les mesures attendu. Cela vous permetra d\'avoir une idée sur les delais de votre projet de changement de poids et évitera d\'avoir les expectations démesurées.',
+			fullproject: 'L\'aperçu global de votre projet',
+			lastmonthproject: 'Vos resultats de dernières semaines',
+			yourproject: 'Votre projet de changement de poids. Vous pouvez atteindre votre poids souhaité vers le {date}',
+			weightkg: 'Poids en kg',
+			expectedDatas: 'Les mesures attendus',
+			realDatas: 'Vos mesures',
+			changeproject: 'Vous pouvez commencer le nouveau projet de changement de poids qui remplacera le courant',
+			reload: 'Mettre à jour',
+			newproject: 'Commenser le nouveau projet',
+			submit: 'Valider',
+			weightgoal: 'Objectif de poids'
 		},
 		en : {
 			user:'Utilisateurs'

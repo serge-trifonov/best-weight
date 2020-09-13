@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.best.weight.desk.entities.BestWeightProject;
 import com.best.weight.desk.entities.User;
+import com.best.weight.desk.service.ProjectService;
 import com.best.weight.desk.service.UserService;
 
 @RestController
@@ -20,13 +22,8 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@PostMapping("{id}")
-	 public User create(
-	            @PathVariable("id") User userFromDB, @RequestBody User user 
-	    ) {
-			BeanUtils.copyProperties(user, userFromDB, "id");
-	        return userService.updateUser(userFromDB);
-	 }
+	@Autowired
+	ProjectService projectService;
 	
 	@GetMapping("{id}")
 	 public User get(

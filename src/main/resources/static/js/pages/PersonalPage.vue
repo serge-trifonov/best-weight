@@ -6,7 +6,7 @@
 	    <label for="actualWeight"><h4>Votre poids actuel</h4></label>
 	    <input type="text" v-model="userProfile.weight" class=" form-control" id="actualWeight" placeholder="Poids actuel">
 	  </div>
-	  <button type="submit" class="btn btn-success" @click.stop="addWeight">Submit</button>
+	  <button type="submit" class="btn btn-success" @click.stop="addWeight">{{$t("reload")}}</button>
 	</form>
 	<div class="col-6 text-center">
 		<div :class="getColor()">
@@ -14,17 +14,26 @@
 			<h5><em>{{$t("comments"+comments ())}}</em></h5>
 		</div>
 		<p class="bg-light">{{$t("bestweightinterval", { min: minPoids, max: maxPoids})}}</p>
+			<h6>{{$t("weightgoal")}} : {{project.desiredWeight}} kg</h6>
 	</div>
-	<form class="col-3 text-center">
- 	 <div class="form-group">
-	    <label for="desiredWeight"><h4>Objectif de poids</h4></label>
+	<form v-if="!project.startDate||changeProject" class="col-3 text-center">
+ 	  <div class="form-group">
+	    <label for="desiredWeight"><h4>{{$t("weightgoal")}}</h4></label>
 	    <input type="number" v-model="project.desiredWeight" class="form-control" id="desiredWeight" placeholder="Poids souhaité">
 	  </div>
-	  <button type="submit" class="btn btn-success" @click.stop="addDesiredWeight">Submit</button>
+	  <button type="submit" class="btn btn-success" @click.stop="addDesiredWeight">{{$t("submit")}}</button>
 	</form>
+	<div v-else class="col-3 text-center">
+		<h4>{{$t("changeproject")}}</h4>
+		<button class="btn btn-success" @click.stop="changeProjectFunction">{{$t("newproject")}}</button> 
+	</div>
     	</div>
-	<div v-if="project.startDate">
-		<highcharts :dats="alldates" :cats="allcategories"/>
+	<div v-if="project.startDate" class="m-5 text-center text-muted">
+		<h5>{{$t("yourproject", { date: project.expectedFinishDate})}}</h5>
+		<highcharts :dats="alldates" :rdats="realdates" :cats="allcategories" :title="$t('fullproject')"/>
+		<br/>
+		<highcharts :dats="dayexpecteddates" :rdats="daydates" :cats="daycategories" :title="$t('lastmonthproject')"/>
+		<br/>
 	</div>
 	<div v-else>
 		<div class="alert alert-dark text-center m-5" role="alert">
@@ -58,14 +67,19 @@ import Chart from "./Graph";
 		minPoids: 0,
 		maxPoids: 0,
 		alldates: [0],
-		allcategories: [""]
+		allcategories: [""],
+		realdates: [0],
+		daydates: [],
+		dayexpecteddates: [],
+		daycategories: [],
+		changeProject: false
 	   }
        },
        methods: {
             async addWeight(event){
 		event.preventDefault();
 		this.userProfile.weight = parseFloat(this.userProfile.weight);
-		var request = await this.$http.post("/user/"+this.userProfile.id, this.userProfile);
+		var request = await this.$http.post("/projects/add/"+this.userProfile.id, this.userProfile);
 		this.userProfile = request.data;
 		user = request.data;
 		this.countImc();
@@ -74,10 +88,14 @@ import Chart from "./Graph";
 		event.preventDefault();
 		this.project.startWeight = this.userProfile.weight;
 		this.project.author = this.userProfile;
-		console.log(this.project);
 		var request = await this.$http.post("/projects", this.project);
 		this.project = request.data;
+		this.changeProject = false;
 
+	    },
+	    changeProjectFunction(event) {
+		event.preventDefault();
+		this.changeProject = true;
 	    },
 	    comments () {
 		if (this.imc<16.5) {
@@ -121,6 +139,7 @@ import Chart from "./Graph";
         },
 	async created(){
 		var result = await this.$http.get("/projects");
+		console.log("result", result);
 		var userInfo = await this.$http.get("user/"+this.userProfile.id);
 		this.userProfile = userInfo.data;
 		this.project = result.data;
@@ -128,10 +147,12 @@ import Chart from "./Graph";
 			this.project={};
 		}
 		else {
-			console.log(this.project);
-			this.alldates = this.project.expectedWeightMesures.map(m=>m.weight);
-			console.log(this.alldates);
-			this.allcategories = this.project.expectedWeightMesures.map(m=>m.mesureDate);
+			this.alldates = this.project.expectedWeekWeightMesures.map(m=>m.weight);
+			this.realdates = this.project.weekWeightMesures.map(m=>m.weight);
+			this.allcategories = this.project.expectedWeekWeightMesures.map(m=>m.mesureDate);
+			this.daydates = this.project.weightMesures.map(m=>m.weight),
+			this.dayexpecteddates = this.project.expectedDayWeightMesures.map(m=>m.weight),
+			this.daycategories = this.project.expectedDayWeightMesures.map(m=>m.mesureDate)
 		}
 		this.countImc();
 	}

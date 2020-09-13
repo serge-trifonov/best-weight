@@ -14,6 +14,8 @@ import com.best.weight.desk.entities.WeightMesure;
 import com.best.weight.desk.repositories.ProjectRepository;
 import com.best.weight.desk.repositories.WeightMesureRepository;
 
+import representations.ProjectRepresentation;
+
 @Service
 public class ProjectService {
 	
@@ -27,9 +29,13 @@ public class ProjectService {
 		 return projectRepository.findByAuthor(user); 
 	 }
 
-	 public BestWeightProject addProject(BestWeightProject project) {
-		projectRepository.delete(projectRepository.findByAuthor(project.getAuthor())); 
-    	project.setStartDate(LocalDate.now());
+	 public ProjectRepresentation addProject(BestWeightProject project) {
+		BestWeightProject existingProject = projectRepository.findByAuthor(project.getAuthor());
+		if(existingProject!=null) {
+			 projectRepository.delete(existingProject);
+		}
+		 
+    	project.setStartDate(LocalDate.now().minusWeeks(2));
     	double actualStartWeight = project.getStartWeight();
     	boolean looseWeight = actualStartWeight>project.getDesiredWeight();
 		LocalDate expectedFinishDate = project.getStartDate();
@@ -52,12 +58,29 @@ public class ProjectService {
 			expectedFinishDate = expectedFinishDate.plusWeeks(1);
 			weightMesure.setMesureDate(expectedFinishDate);
 			weightMesure.setWeight(actualStartWeight);
-			weightMesureRepository.save(weightMesure);
 			expectedWeightMesures.add(weightMesure);
 		}
 		project.setExpectedFinishDate(expectedFinishDate);
-		project.setExpectedWeightMesures(expectedWeightMesures);
 		project.setWeightMesures(weightMesures);
-		return projectRepository.save(project);
+		return new ProjectRepresentation(projectRepository.save(project));
 	 }
+
+	public ProjectRepresentation addWeight(User user) {
+		BestWeightProject project = projectRepository.findByAuthor(user);
+		List <WeightMesure> weightMesures = project.getWeightMesures();
+		
+		WeightMesure wm = weightMesures.stream().filter(m->m.getMesureDate().equals(LocalDate.now())).findAny().orElse(null);
+
+		if(wm!=null) {
+			weightMesureRepository.delete(wm);
+			weightMesures.remove(wm);
+		}
+		
+		WeightMesure weightMesure= new WeightMesure();
+		weightMesure.setMesureDate(LocalDate.now());
+		weightMesure.setWeight(user.getWeight());
+		weightMesureRepository.save(weightMesure);
+		weightMesures.add(weightMesure);
+		return new ProjectRepresentation(projectRepository.save(project));
+	}
 }

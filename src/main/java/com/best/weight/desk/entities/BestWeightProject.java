@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,10 +26,10 @@ public class BestWeightProject implements Serializable{
 	private Long id;
 	private LocalDate startDate;
 	private LocalDate expectedFinishDate;
-	@OneToMany
+	@OneToMany(cascade = {CascadeType.ALL})
 	private List<WeightMesure> weightMesures;
-	@OneToMany
-	private List<WeightMesure> expectedWeightMesures;
+	
+	
 	private Double desiredWeight;
 	private Double startWeight;
 	@OneToOne
@@ -52,12 +53,7 @@ public class BestWeightProject implements Serializable{
 	public void setAuthor(User author) {
 		this.author = author;
 	}
-	public List<WeightMesure> getExpectedWeightMesures() {
-		return expectedWeightMesures;
-	}
-	public void setExpectedWeightMesures(List<WeightMesure> expectedWeightMesures) {
-		this.expectedWeightMesures = expectedWeightMesures;
-	}
+
 	public Double getDesiredWeight() {
 		return desiredWeight;
 	}
@@ -82,5 +78,5 @@ public class BestWeightProject implements Serializable{
 	public void setExpectedFinishDate(LocalDate expectedFinishDate) {
 		this.expectedFinishDate = expectedFinishDate;
 	}
-
+	
 }
