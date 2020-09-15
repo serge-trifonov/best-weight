@@ -20,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.best.weight.desk.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import javax.sql.DataSource;
@@ -36,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {
-		return new BCryptPasswordEncoder(16);
+		return new BCryptPasswordEncoder(8);
 	}
 
     @Override

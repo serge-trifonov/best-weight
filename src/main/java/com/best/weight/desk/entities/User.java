@@ -36,7 +36,6 @@ public class User implements UserDetails, Serializable{
 	private String password;
 	private String email;
 	private Double height;
-	private Double weight;
 	
 	@ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
@@ -77,12 +76,6 @@ public class User implements UserDetails, Serializable{
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public Double getWeight() {
-		return weight;
-	}
-	public void setWeight(Double weight) {
-		this.weight = weight;
 	}
 	
 	@Override

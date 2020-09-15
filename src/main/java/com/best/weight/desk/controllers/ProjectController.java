@@ -35,6 +35,9 @@ public class ProjectController {
 	 @GetMapping   
 	 public ProjectRepresentation main(@AuthenticationPrincipal User author) throws AuthenticationException, Exception {
 		 BestWeightProject project = projectService.findByAuthor(author);
+		 if (project == null) {
+			 return null;
+		 }
 	     ProjectRepresentation representation =  new ProjectRepresentation(project); 
 	     return representation;
 	  }
@@ -50,7 +53,7 @@ public class ProjectController {
 	 public ProjectRepresentation addWeight(
 	            @PathVariable("id") User userFromDB, @RequestBody User user 
 	    ) {
-			BeanUtils.copyProperties(user, userFromDB, "id"); 
+			BeanUtils.copyProperties(user, userFromDB, "id");
 			userService.updateUser(userFromDB);
 		 	return projectService.addWeight(userFromDB);
 	 }

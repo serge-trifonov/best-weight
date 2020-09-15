@@ -4,17 +4,19 @@
 	<form class="col-3 text-center">
  	 <div class="form-group">
 	    <label for="actualWeight"><h4>Votre poids actuel</h4></label>
-	    <input type="text" v-model="userProfile.weight" class=" form-control" id="actualWeight" placeholder="Poids actuel">
+	    <input type="number" v-model="project.currentWeight" :class="emptyWeight?'form-control border-danger':'form-control'" id="actualWeight" placeholder="Poids actuel">
+	    <span v-if="emptyWeight" class="text-danger">{{$t("noweight")}}</span>
 	  </div>
 	  <button type="submit" class="btn btn-success" @click.stop="addWeight">{{$t("reload")}}</button>
 	</form>
 	<div class="col-6 text-center">
-		<div :class="getColor()">
-			<h5>{{$t("yourimc")}} : {{imc}}</h5>
+		<div v-if="project.currentWeight && project.currentWeight!=0" :class="getColor()">
+			<h5>{{$t("yourimc")}} : {{getImc()}}</h5>
 			<h5><em>{{$t("comments"+comments ())}}</em></h5>
 		</div>
-		<p class="bg-light">{{$t("bestweightinterval", { min: minPoids, max: maxPoids})}}</p>
-			<h6>{{$t("weightgoal")}} : {{project.desiredWeight}} kg</h6>
+		<p class="bg-light mt-3">{{$t("bestweightinterval", { min: minPoids, max: maxPoids})}}</p>
+			<h6 v-if="project.desiredWeight">{{$t("weightgoal")}} : {{project.desiredWeight}} kg</h6>
+			<h6 v-else>{{$t("noweightgoal")}}</h6>
 	</div>
 	<form v-if="!project.startDate||changeProject" class="col-3 text-center">
  	  <div class="form-group">
@@ -30,6 +32,9 @@
     	</div>
 	<div v-if="project.startDate" class="m-5 text-center text-muted">
 		<h5>{{$t("yourproject", { date: project.expectedFinishDate})}}</h5>
+		<div :class="'alert alert-'+getMessageType()" role="alert">
+			{{$t('message'+getMessageType()+getAdvice())}}
+		</div>
 		<highcharts :dats="alldates" :rdats="realdates" :cats="allcategories" :title="$t('fullproject')"/>
 		<br/>
 		<highcharts :dats="dayexpecteddates" :rdats="daydates" :cats="daycategories" :title="$t('lastmonthproject')"/>
@@ -61,9 +66,8 @@ import Chart from "./Graph";
   	},
 	data() {
             return {
-		userProfile: user,
+		userProfile: {},
 		project: {},
-		imc: 0,
 		minPoids: 0,
 		maxPoids: 0,
 		alldates: [0],
@@ -72,25 +76,36 @@ import Chart from "./Graph";
 		daydates: [],
 		dayexpecteddates: [],
 		daycategories: [],
-		changeProject: false
+		changeProject: false,
+		emptyWeight: false
 	   }
        },
        methods: {
             async addWeight(event){
 		event.preventDefault();
-		this.userProfile.weight = parseFloat(this.userProfile.weight);
-		var request = await this.$http.post("/projects/add/"+this.userProfile.id, this.userProfile);
-		this.userProfile = request.data;
-		user = request.data;
-		this.countImc();
+		this.project.currentWeight = parseFloat(this.userProfile.weight);
+		if(this.project.currentWeight != 0) {
+			this.emptyWeight = false;
+			var request = await this.$http.post("/projects/add/"+this.userProfile.id, this.project);
+			this.project.currentWeight = request.data;
+			user = request.data;
+			this.countImc();
+			location.reload();
+		}
             },
 	    async addDesiredWeight(event) {
 		event.preventDefault();
-		this.project.startWeight = this.userProfile.weight;
-		this.project.author = this.userProfile;
-		var request = await this.$http.post("/projects", this.project);
-		this.project = request.data;
-		this.changeProject = false;
+		if(!this.project.currentWeight || this.project.currentWeight == 0) {
+			this.emptyWeight = true;
+		}
+		else {
+			this.project.startWeight = this.project.currentWeight;
+			this.project.author = this.userProfile;
+			var request = await this.$http.post("/projects", this.project);
+			this.project = request.data;
+			this.changeProject = false;
+			location.reload();
+		}
 
 	    },
 	    changeProjectFunction(event) {
@@ -98,22 +113,22 @@ import Chart from "./Graph";
 		this.changeProject = true;
 	    },
 	    comments () {
-		if (this.imc<16.5) {
+		if (this.getImc()<16.5) {
 			return "1";
 		}
-		else if(this.imc<18.5) {
+		else if(this.getImc()<18.5) {
 			return "2";
 		}
-		else if(this.imc<=25) {
+		else if(this.getImc()<=25) {
 			return "3";
 		}
-		else if(this.imc<30) {
+		else if(this.getImc()<30) {
 			return "4";
 		}
-		else if(this.imc<35) {
+		else if(this.getImc()<35) {
 			return "5";
 		}
-		else if(this.imc<40) {
+		else if(this.getImc()<40) {
 			return "6";
 		}
 		else {
@@ -121,40 +136,68 @@ import Chart from "./Graph";
 		}
 	    },
 	    countImc() {
-		this.imc = (this.userProfile.weight/((this.userProfile.height/100)*(this.userProfile.height/100))).toFixed(2);
 		this.minPoids = (((this.userProfile.height/100)*(this.userProfile.height/100))*18.5).toFixed(2);
 		this.maxPoids = (((this.userProfile.height/100)*(this.userProfile.height/100))*25).toFixed(2);
 	    },
 	    getColor() {
-		if (this.imc<25 && this.imc>=18.5) {
+		if (this.getImc()<25 && this.getImc()>=18.5) {
 			return "text-success";
 		}
-		else if(this.imc<16.5 || this.imc>=30) {
+		else if(this.getImc()<16.5 || this.getImc()>=30) {
 			return "text-danger";
 		}
 		else {
 			return "text-warning";
 		}
+	    },
+	    getMessageType() {
+		var expectedToday = this.project.expectedDayWeightMesures[this.project.expectedDayWeightMesures.length-1];
+		var difference = this.project.currentWeight - expectedToday.weight;
+		if(difference<=1.5) {
+			return "success";
+		}
+		else if(difference<=2.5) {
+			return "warning";
+		}
+		else {
+			return "danger";
+		}
+	    },
+	    getAdvice() {
+		var expectedToday = this.project.expectedDayWeightMesures[this.project.expectedDayWeightMesures.length-1];
+		if((this.project.currentWeight>expectedToday.weight && this.project.startWeight<this.project.desiredWeight) || 
+			(this.project.currentWeight<expectedToday.weight && this.project.startWeight>this.project.desiredWeight)) {
+			return "samedirection";
+		}
+		else {
+			return "oppositedirection";
+		}
+	    },
+	    graphUpgrade() {
+		this.alldates = this.project.expectedWeekWeightMesures.map(m=>m.weight);
+		this.realdates = this.project.weekWeightMesures.map(m=>m.weight);
+		this.allcategories = this.project.expectedWeekWeightMesures.map(m=>m.mesureDate);
+		this.daydates = this.project.weightMesures.map(m=>m.weight),
+		this.dayexpecteddates = this.project.expectedDayWeightMesures.map(m=>m.weight),
+		this.daycategories = this.project.expectedDayWeightMesures.map(m=>m.mesureDate)
+	    },
+	    getImc() {
+		console.log(this.project);
+		return (this.project.currentWeight/((this.userProfile.height/100)*(this.userProfile.height/100))).toFixed(2);
 	    }
         },
-	async created(){
+	async beforeCreate(){
 		var result = await this.$http.get("/projects");
-		console.log("result", result);
-		var userInfo = await this.$http.get("user/"+this.userProfile.id);
+		var userInfo = await this.$http.get("user");
 		this.userProfile = userInfo.data;
 		this.project = result.data;
+		this.countImc();
 		if(!this.project){
 			this.project={};
 		}
 		else {
-			this.alldates = this.project.expectedWeekWeightMesures.map(m=>m.weight);
-			this.realdates = this.project.weekWeightMesures.map(m=>m.weight);
-			this.allcategories = this.project.expectedWeekWeightMesures.map(m=>m.mesureDate);
-			this.daydates = this.project.weightMesures.map(m=>m.weight),
-			this.dayexpecteddates = this.project.expectedDayWeightMesures.map(m=>m.weight),
-			this.daycategories = this.project.expectedDayWeightMesures.map(m=>m.mesureDate)
+			this.graphUpgrade();
 		}
-		this.countImc();
 	}
     }
 </script>

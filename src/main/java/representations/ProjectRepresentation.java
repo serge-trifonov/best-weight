@@ -182,4 +182,7 @@ public class ProjectRepresentation {
 		this.startWeight = startWeight;
 	}
 	
+	public boolean getCurrent() {
+		return this.expectedFinishDate.isAfter(LocalDate.now());
+	}
 }

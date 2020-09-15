@@ -1,5 +1,6 @@
 package com.best.weight.desk.service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,10 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import com.best.weight.desk.entities.BestWeightProject;
 import com.best.weight.desk.entities.User;
 import com.best.weight.desk.repositories.UserRepository;
 
@@ -27,7 +25,6 @@ public class UserService implements UserDetailsService{
 	
 	public Map <String, Object> create(User user) {
 		Map <String, Object> model = new HashMap<>();
-		System.out.println("height "+user.getHeight());
 		boolean nameexist = userRepository.findByUsername(user.getUsername())!=null;
 		boolean emailexist = userRepository.findByEmail(user.getEmail())!=null;
 		model.put("nameexist", nameexist);
@@ -50,6 +47,10 @@ public class UserService implements UserDetailsService{
 
 	public User updateUser(User user) {
 		return userRepository.save(user);
+	}
+
+	public User getUser(Long id) {
+		return userRepository.getOne(id);
 	}
 
 }

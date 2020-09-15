@@ -1,6 +1,3 @@
-/application.properties
-/com/
-/session_tables.sql
-/static/
-/templates/
 /representations/
+/static/
+/com/

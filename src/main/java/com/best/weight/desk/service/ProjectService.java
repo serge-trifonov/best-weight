@@ -66,7 +66,11 @@ public class ProjectService {
 	 }
 
 	public ProjectRepresentation addWeight(User user) {
+		
 		BestWeightProject project = projectRepository.findByAuthor(user);
+		if(project == null) {
+			return null;
+		}
 		List <WeightMesure> weightMesures = project.getWeightMesures();
 		
 		WeightMesure wm = weightMesures.stream().filter(m->m.getMesureDate().equals(LocalDate.now())).findAny().orElse(null);
@@ -78,7 +82,6 @@ public class ProjectService {
 		
 		WeightMesure weightMesure= new WeightMesure();
 		weightMesure.setMesureDate(LocalDate.now());
-		weightMesure.setWeight(user.getWeight());
 		weightMesureRepository.save(weightMesure);
 		weightMesures.add(weightMesure);
 		return new ProjectRepresentation(projectRepository.save(project));

@@ -72,7 +72,8 @@
 			email: "",
 			password: "",
 			height: ""
-		}
+		},
+		user: user
             }
        },
        methods: {
@@ -82,11 +83,14 @@
 		formData.append("username", this.profile.username);
 		formData.append("password", this.profile.password);
 		var result = await this.$http.post("/login", formData);
-		console.log(result.data);
+		var currentUser = await this.$http.get("/user");
+		console.log(currentUser);
+		if (currentUser.data.id) {
+			location.reload();
+		}
             },
 	    async registration(event){
 		event.preventDefault();
-		console.log(this.profile);
 		await this.$http.post("/registration", this.profile);
             }
         },
