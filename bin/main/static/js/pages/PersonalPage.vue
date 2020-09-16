@@ -117,7 +117,6 @@ import Chart from "./Graph";
 			this.emptyWeight = false;
 			var request = await this.$http.post("/projects/add/"+this.userProfile.id, this.userProfile);
 			this.project = request.data;
-			console.log(this.project);
 			user = request.data;
 			this.countImc();
 			location.reload();
@@ -195,7 +194,6 @@ import Chart from "./Graph";
 		this.userProfile = userInfo.data;
 		this.project = result.data;
 		this.countImc();
-		console.log(this.project);
 		if(!this.project){
 			this.project={};
 		}

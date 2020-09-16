@@ -54,10 +54,14 @@ export const i18n = new VueI18n({
 			nopassword: 'Veillez saisir un mot de passe de 3 caractères minimum',
 			nousername: 'Le nom d\'utilisateur n\'est pas valide',
 			noemail: 'Email n\'est pas correcte',
-			noheight: 'La taille est obligatoire'
+			noheight: 'La taille est obligatoire',
+			itsademoversion: 'Ceci est une version demo de l\'application',
+			miniversion: 'Cette version mini permet de decouvrir les fonctionnalités du projet sans inscription. Vous pouvez tout simplement saisir votre taille, votre poids actuel, le poids que vous aimeriez avoir et l\'application va vous donner votre imc et la graphe de changement de poids pour atteindre le poids que vous désirez. Cela vous permettra de voir vers quelle date vous  pourrez avoir le poids que vous desirez. L\'application dessine les graphes en prenant la vitesse recommendé du changement du poids , donc environs +-0.75 % de votre poids par semaine (quelle que soit votre envie, de perdre du poids ou de gagner en masse musculaire).',
+			fullaccess: 'Si vous choisissez de vous inscrire (espace personnel) vous pourrez ajouter votre poids actuel au fur et à mesure d\'avancement de votre projet de perte de poids et comparez les resultats de vos mesures avec les mesures attendues, comme il est montré sur le dessin ci-dessous',
+			logout: "se déconnecter"
 		},
 		en : {
-			user:'Utilisateurs'
+			user:'Users'
 		}	
 	}
 })

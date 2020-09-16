@@ -35,7 +35,7 @@ public class ProjectService {
 			 projectRepository.delete(existingProject);
 		}
 		 
-    	project.setStartDate(LocalDate.now().minusWeeks(2));
+    	project.setStartDate(LocalDate.now());
     	double actualStartWeight = project.getStartWeight();
     	boolean looseWeight = actualStartWeight>project.getDesiredWeight();
 		LocalDate expectedFinishDate = project.getStartDate();

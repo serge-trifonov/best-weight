@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.best.weight.desk.entities.BestWeightProject;
+import com.best.weight.desk.entities.Demo;
 import com.best.weight.desk.entities.User;
 import com.best.weight.desk.repositories.ProjectRepository;
 import com.best.weight.desk.service.ProjectService;
@@ -57,5 +58,5 @@ public class ProjectController {
 			userService.updateUser(userFromDB);
 		 	return projectService.addWeight(userFromDB);
 	 }
-
+	 
 }

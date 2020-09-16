@@ -2,17 +2,17 @@
     	<div class="row ml-2 mt-5">
 	  <div class="col-4">
 	    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-	      <a class="nav-link active startbutton" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="!loginselected">
+	      <a class="nav-link active startbutton" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="!loginselected" @click="choseTab(7)">
 			<div class="button-text">{{$t("aboutprogram")}}</div>
 	      </a>
-	      <a class="nav-link startbutton" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="loginselected">
+	      <a class="nav-link startbutton" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="loginselected" @click="choseTab(4)">
 			<div class="button-text">{{$t("enter")}}</div>
 	      </a>
 	    </div>
 	  </div>
-	  <div class="col-4">
+	  <div :class="'col-'+size">
 	    <div class="tab-content" id="v-pills-tabContent">
-	      <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">Home home</div>
+	      <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab"><demo/></div>
 	      <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
 		<nav>
 		  <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -61,7 +61,7 @@
 			  </div>
 			  <button type="submit" class="btn startbutton-white" @click.stop="registration">{{$t("submit")}}</button>
 			</form>
-		  </div>
+		</div>
 	      </div>
 	    </div>
 	  </div>
@@ -70,7 +70,11 @@
 </template>
 
 <script>
+    import Demo from "./Demo";
     export default {
+	components: {
+	    demo: Demo
+  	},
 	data() {
             return {
 		profile: {
@@ -87,7 +91,8 @@
 		noEmail: false,
 		loginfailed: false,
 		noUsernameLog: false,
-		noPasswordLog: false
+		noPasswordLog: false,
+		size: 7
             }
        },
        methods: {
@@ -109,6 +114,9 @@
 			}
 		}
             },
+	    choseTab(largeur) {
+		this.size=largeur;
+	    },
 	    async registration(event){
 		event.preventDefault();
 		var re = /\S+@\S+\.\S+/;
