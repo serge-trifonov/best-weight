@@ -17,6 +17,7 @@ public class ProjectRepresentation {
 	private List<WeightMesureRepresentation> expectedDayWeightMesures;
 	private Double desiredWeight;
 	private Double startWeight;
+
 	
 	public ProjectRepresentation(BestWeightProject project) {
 		this.startDate = project.getStartDate();

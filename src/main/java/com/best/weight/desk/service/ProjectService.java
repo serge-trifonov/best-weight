@@ -82,6 +82,7 @@ public class ProjectService {
 		
 		WeightMesure weightMesure= new WeightMesure();
 		weightMesure.setMesureDate(LocalDate.now());
+		weightMesure.setWeight(user.getWeight());
 		weightMesureRepository.save(weightMesure);
 		weightMesures.add(weightMesure);
 		return new ProjectRepresentation(projectRepository.save(project));

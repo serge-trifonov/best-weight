@@ -39,7 +39,22 @@ export const i18n = new VueI18n({
 			messagewarningoppositedirection: 'Vous vous eloignez un peu trop de votre projet. Faites attention !',
 			messagewarningsamedirection: 'Il ne faut pas trop précipiter les choses. Le changement de poids trop rapide peut être nocive pour votre santé',
 			messagedangeroppositedirection: 'Malheureusement vous êtes beaucoup trop éloigné du plan. On vous conseille de commencer le nouveau projet de changement de poids.',
-			messagedangersamedirection: 'Attention! Le changement de poids aussi rapide peut est dangereau pour votre santé'
+			messagedangersamedirection: 'Attention! Le changement de poids aussi rapide peut est dangereau pour votre santé',
+			currentweight: 'Votre poids actuel',
+			startweight: 'Le poids de depart',
+			aboutprogram: 'Description',
+			enter: 'Espace personnel',
+			login: 'Connexion',
+			registration: 'Registration',
+			username: 'Nom d\'utilisateur',
+			password: 'Mot de passe',
+			email: 'Email',
+			height: 'Taille en cm',
+			notidentified: 'Les données saisies n\'ont pas permi de vous authentifier',
+			nopassword: 'Veillez saisir un mot de passe de 3 caractères minimum',
+			nousername: 'Le nom d\'utilisateur n\'est pas valide',
+			noemail: 'Email n\'est pas correcte',
+			noheight: 'La taille est obligatoire'
 		},
 		en : {
 			user:'Utilisateurs'

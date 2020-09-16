@@ -3,16 +3,16 @@
 	<div class="row">
 	<form class="col-3 text-center">
  	 <div class="form-group">
-	    <label for="actualWeight"><h4>Votre poids actuel</h4></label>
-	    <input type="number" v-model="project.currentWeight" :class="emptyWeight?'form-control border-danger':'form-control'" id="actualWeight" placeholder="Poids actuel">
+	    <label for="actualWeight"><h4>{{$t("currentweight")}}</h4></label>
+	    <input type="number" v-model="userProfile.weight" :class="emptyWeight?'form-control border-danger':'form-control'" id="actualWeight" placeholder="Poids actuel">
 	    <span v-if="emptyWeight" class="text-danger">{{$t("noweight")}}</span>
 	  </div>
 	  <button type="submit" class="btn btn-success" @click.stop="addWeight">{{$t("reload")}}</button>
 	</form>
 	<div class="col-6 text-center">
-		<div v-if="project.currentWeight && project.currentWeight!=0" :class="getColor()">
-			<h5>{{$t("yourimc")}} : {{getImc()}}</h5>
-			<h5><em>{{$t("comments"+comments ())}}</em></h5>
+		<div v-if="userProfile.weight && userProfile.weight!=0" :class="getColor()">
+			<h5>{{$t("yourimc")}} : {{imc}}</h5>
+			<h5><em>{{$t("comments"+comments)}}</em></h5>
 		</div>
 		<p class="bg-light mt-3">{{$t("bestweightinterval", { min: minPoids, max: maxPoids})}}</p>
 			<h6 v-if="project.desiredWeight">{{$t("weightgoal")}} : {{project.desiredWeight}} kg</h6>
@@ -80,14 +80,44 @@ import Chart from "./Graph";
 		emptyWeight: false
 	   }
        },
+  	computed: {
+    		imc: function () {
+      			return (this.userProfile.weight/((this.userProfile.height/100)*(this.userProfile.height/100))).toFixed(2);
+    		},
+		comments: function () {
+		if (this.imc<16.5) {
+			return "1";
+		}
+		else if(this.imc<18.5) {
+			return "2";
+		}
+		else if(this.imc<=25) {
+			return "3";
+		}
+		else if(this.imc<30) {
+			return "4";
+		}
+		else if(this.imc<35) {
+			return "5";
+		}
+		else if(this.imc<40) {
+			return "6";
+		}
+		else {
+			return "7";
+		}
+	    }
+		
+       },
        methods: {
             async addWeight(event){
 		event.preventDefault();
-		this.project.currentWeight = parseFloat(this.userProfile.weight);
-		if(this.project.currentWeight != 0) {
+		this.project.startWeight = parseFloat(this.userProfile.weight);
+		if(this.project.startWeight != 0) {
 			this.emptyWeight = false;
-			var request = await this.$http.post("/projects/add/"+this.userProfile.id, this.project);
-			this.project.currentWeight = request.data;
+			var request = await this.$http.post("/projects/add/"+this.userProfile.id, this.userProfile);
+			this.project = request.data;
+			console.log(this.project);
 			user = request.data;
 			this.countImc();
 			location.reload();
@@ -95,55 +125,31 @@ import Chart from "./Graph";
             },
 	    async addDesiredWeight(event) {
 		event.preventDefault();
-		if(!this.project.currentWeight || this.project.currentWeight == 0) {
+		if(!this.userProfile.weight || this.userProfile.weight == 0) {
 			this.emptyWeight = true;
 		}
 		else {
-			this.project.startWeight = this.project.currentWeight;
+			this.project.startWeight = this.userProfile.weight;
 			this.project.author = this.userProfile;
 			var request = await this.$http.post("/projects", this.project);
 			this.project = request.data;
 			this.changeProject = false;
 			location.reload();
 		}
-
 	    },
 	    changeProjectFunction(event) {
 		event.preventDefault();
 		this.changeProject = true;
-	    },
-	    comments () {
-		if (this.getImc()<16.5) {
-			return "1";
-		}
-		else if(this.getImc()<18.5) {
-			return "2";
-		}
-		else if(this.getImc()<=25) {
-			return "3";
-		}
-		else if(this.getImc()<30) {
-			return "4";
-		}
-		else if(this.getImc()<35) {
-			return "5";
-		}
-		else if(this.getImc()<40) {
-			return "6";
-		}
-		else {
-			return "7";
-		}
 	    },
 	    countImc() {
 		this.minPoids = (((this.userProfile.height/100)*(this.userProfile.height/100))*18.5).toFixed(2);
 		this.maxPoids = (((this.userProfile.height/100)*(this.userProfile.height/100))*25).toFixed(2);
 	    },
 	    getColor() {
-		if (this.getImc()<25 && this.getImc()>=18.5) {
+		if (this.imc<25 && this.imc>=18.5) {
 			return "text-success";
 		}
-		else if(this.getImc()<16.5 || this.getImc()>=30) {
+		else if(this.imc<16.5 || this.imc>=30) {
 			return "text-danger";
 		}
 		else {
@@ -152,7 +158,7 @@ import Chart from "./Graph";
 	    },
 	    getMessageType() {
 		var expectedToday = this.project.expectedDayWeightMesures[this.project.expectedDayWeightMesures.length-1];
-		var difference = this.project.currentWeight - expectedToday.weight;
+		var difference = this.userProfile.weight - expectedToday.weight;
 		if(difference<=1.5) {
 			return "success";
 		}
@@ -165,7 +171,7 @@ import Chart from "./Graph";
 	    },
 	    getAdvice() {
 		var expectedToday = this.project.expectedDayWeightMesures[this.project.expectedDayWeightMesures.length-1];
-		if((this.project.currentWeight>expectedToday.weight && this.project.startWeight<this.project.desiredWeight) || 
+		if((this.userProfile.weight>expectedToday.weight && this.project.startWeight<this.project.desiredWeight) || 
 			(this.project.currentWeight<expectedToday.weight && this.project.startWeight>this.project.desiredWeight)) {
 			return "samedirection";
 		}
@@ -177,21 +183,19 @@ import Chart from "./Graph";
 		this.alldates = this.project.expectedWeekWeightMesures.map(m=>m.weight);
 		this.realdates = this.project.weekWeightMesures.map(m=>m.weight);
 		this.allcategories = this.project.expectedWeekWeightMesures.map(m=>m.mesureDate);
-		this.daydates = this.project.weightMesures.map(m=>m.weight),
-		this.dayexpecteddates = this.project.expectedDayWeightMesures.map(m=>m.weight),
-		this.daycategories = this.project.expectedDayWeightMesures.map(m=>m.mesureDate)
-	    },
-	    getImc() {
-		console.log(this.project);
-		return (this.project.currentWeight/((this.userProfile.height/100)*(this.userProfile.height/100))).toFixed(2);
+		this.daydates = this.project.weightMesures.map(m=>m.weight);
+		this.dayexpecteddates = this.project.expectedDayWeightMesures.map(m=>m.weight);
+		this.daycategories = this.project.expectedDayWeightMesures.map(m=>m.mesureDate);
+	
 	    }
         },
 	async beforeCreate(){
 		var result = await this.$http.get("/projects");
-		var userInfo = await this.$http.get("user");
+		var userInfo = await this.$http.get("user/"+user.id);
 		this.userProfile = userInfo.data;
 		this.project = result.data;
 		this.countImc();
+		console.log(this.project);
 		if(!this.project){
 			this.project={};
 		}
