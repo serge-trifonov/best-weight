@@ -1,3 +1,7 @@
-/representations/
-/static/
+/application.properties
 /com/
+/js/
+/representations/
+/session_tables.sql
+/static/
+/templates/
